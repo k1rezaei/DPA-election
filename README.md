@@ -1,8 +1,10 @@
 # DPA-election
 
 
-cmsc828: Foundation of Deep Learning
+## CMSC828: Foundation of Deep Learning
 
-Atoosa Chegini
-Kiarash Banihashem
-Keivan Rezaei
+Improved Deep Partition Aggregation using two-round election.
+
++ Atoosa Chegini
++ Kiarash Banihashem
++ Keivan Rezaei
