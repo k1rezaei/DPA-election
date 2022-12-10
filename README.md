@@ -2,8 +2,9 @@
 
 
 ## CMSC828: Foundation of Deep Learning
+### Fall 2022
 
-Improved Deep Partition Aggregation using two-round election.
+Improved deep partition aggregation using <b>two-round election.</b>
 
 + Atoosa Chegini
 + Kiarash Banihashem
