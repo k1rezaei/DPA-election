@@ -103,4 +103,4 @@ accs = numpy.array([(i <= a).sum() for i in numpy.arange(numpy.amax(a)+1)])/pred
 print('Smoothed classifier accuracy: ' + str(accs[0] * 100.) + '%')
 print('Robustness certificate: ' + str(sum(accs >= .5)))
 
-
+print(accs)
