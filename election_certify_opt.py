@@ -89,7 +89,7 @@ for i in tqdm(range(num_of_points)):
     else:
         idx_election[i] = m2
 
-    # case1: (top two classes remain same).
+    # case1: (top two classes remain same)
     case1 = 0
     if elec > 0:
         case1 = (elec - (m2 <= m1))
@@ -98,13 +98,13 @@ for i in tqdm(range(num_of_points)):
     else:
         case1 = (-elec - (m1 <= m2))
 
-    # case2: (we want to keep the prediction, and change the other class to sth else).
+    # case2: (we want to keep the prediction, and change the other class to sth else)
     case2 = INF
     if idx_election[i] == m1:
         for m3 in range(num_classes):
             if m1 == m3 or m2 == m3:
                 continue
-            n1 = prediction[m2].item() - prediction[m3] - (m3 <= m2)
+            n1 = prediction[m2] - prediction[m3] - (m3 <= m2)
             n2 = m1_election[m3] - (m3 <= m1)
 
             m3_need = max(n1, n2)
