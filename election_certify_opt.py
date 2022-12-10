@@ -148,7 +148,7 @@ print("==> original dpa ..")
 certs = diffs_dpa
 torchidx = idx_dpa
 certs[torchidx != labels] = -1
-torch.save(certs,'./radii/dpa_'+args.evaluations+'_v2.pth')
+torch.save(certs,'./radii/dpa_'+args.evaluations+'.pth')
 a = certs.cpu().sort()[0].numpy()
 
 dpa_accs = np.array([(i <= a).sum() for i in np.arange(np.amax(a)+1)])/num_of_points
@@ -162,7 +162,7 @@ print("==> election dpa ..")
 certs = diffs_election_dpa
 torchidx = idx_election
 certs[torchidx != labels] = -1
-torch.save(certs,'./radii/election_'+args.evaluations+'_v2.pth')
+torch.save(certs,'./radii/election_'+args.evaluations+'.pth')
 a = certs.cpu().sort()[0].numpy()
 
 election_accs = np.array([(i <= a).sum() for i in np.arange(np.amax(a)+1)])/num_of_points
