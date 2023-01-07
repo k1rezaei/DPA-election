@@ -6,6 +6,10 @@ __pycache__/
 *.pth
 *.json
 
+# pdf/ png
+*.pdf
+*.png
+
 # C extensions
 *.so
 
