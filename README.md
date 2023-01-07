@@ -1,11 +1,12 @@
-# DPA-election
+# Run-off Election
 
+This repository includes PyTorch implementation of our paper.
 
-## CMSC828: Foundation of Deep Learning
-### Fall 2022
+##### Run-off Election: Improved Provable Defense against Data Poisoning Attacks 
+<font size=2>
+Keivan Rezaei*, Kiarash Banihashem*, Atoosa Chegini, Soheil Feizi
+</font>
 
-Improved deep partition aggregation using <b>two-round election.</b>
-
-+ Atoosa Chegini
-+ Kiarash Banihashem
-+ Keivan Rezaei
+<br>
+<br>
+Please see <i>guideline.md</i> for technical details and reproducing our results.
