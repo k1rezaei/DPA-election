@@ -147,18 +147,36 @@ for i in tqdm(range(num_of_samples)):
      # case1: (eliminating prediction in the 1st round)
     case1 = INF
     if idx_roe_fa[i] == m1: # m1 is prediction
-        for m3 in range(num_of_classes):
-            if m1 == m3 or m2 == m3:
-                continue
+        # OLD CASE
+        # for m3 in range(num_of_classes):
+        #     if m1 == m3 or m2 == m3:
+        #         continue
                 
-            n1 = m1_to_m3[m3]
+        #     n1 = m1_to_m3[m3]
 
-            case1_gap = prediction[m1] - prediction[m3] - (m3 <= m1) + prediction[m1] - prediction[m2] - (m2 <= m1)
-            deltas_case1 = (1 + 2 * (max_classes_given_h == m1).long() - (max_classes_given_h == m2).long() - (max_classes_given_h == m3).long()).sum(dim=1)
-            n2 = get_sample_radius(case1_gap, deltas_case1)
+        #     case1_gap = prediction[m1] - prediction[m3] - (m3 <= m1) + prediction[m1] - prediction[m2] - (m2 <= m1)
+        #     deltas_case1 = (1 + 2 * (max_classes_given_h == m1).long() - (max_classes_given_h == m2).long() - (max_classes_given_h == m3).long()).sum(dim=1)
+        #     n2 = get_sample_radius(case1_gap, deltas_case1)
 
-            m3_need = max(n1, n2)
-            case1 = min(case1, m3_need)
+        #     m3_need = max(n1, n2)
+        #     case1 = min(case1, m3_need)
+        
+        # NEW CASE
+        for m3 in range(num_of_classes):
+            for m4 in range(num_of_classes):
+                if m3 == m1 or m4 == m1:
+                    continue
+
+                n1 = m1_to_m3[m3]
+                n2 = m1_to_m3[m4]
+
+                case1_gap = prediction[m1] - prediction[m3] - (m3 <= m1) + prediction[m1] - prediction[m4] - (m4 <= m1)
+                deltas_case1 = (1 + 2 * (max_classes_given_h == m1).long() - (max_classes_given_h == m3).long() - (max_classes_given_h == m4).long()).sum(dim=1)
+                n3 = get_sample_radius(case1_gap, deltas_case1)
+                
+                m34_need = max(max(n1, n2), n3)
+                case1 = min(case1, m34_need)
+
     else: # m2 is prediction
         for m3 in range(num_of_classes):
             if m1 == m3 or m2 == m3:
@@ -220,7 +238,7 @@ for i in tqdm(range(num_of_samples)):
 
 base_acc = 100 *  (max_classes[:, :, 0] == labels.unsqueeze(1)).sum().item() / (num_of_samples * num_of_models)
 print('Base classifier accuracy: ' + str(base_acc))
-torch.save(certs,'./certs/roe_fa_'+args.evaluations+'.pth')
+torch.save(certs,'./certs_v2/roe_fa_'+args.evaluations+'.pth')
 a = certs.cpu().sort()[0].numpy()
 accs = np.array([(i <= a).sum() for i in np.arange(np.amax(a)+1)])/predictions.shape[0]
 print('Smoothed classifier accuracy: ' + str(accs[0] * 100.) + '%')
