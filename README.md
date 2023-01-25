@@ -6,4 +6,4 @@ This repository includes PyTorch implementation of our submission.
 
 <br>
 <br>
-Please see <i>guideline.md</i> for technical details and reproducing our results.
+Please see [guideline.md](https://github.com/k1rezaei/DPA-election/blob/main/guideline.md) for technical details and reproducing our results.
