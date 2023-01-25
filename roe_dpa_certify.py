@@ -105,7 +105,7 @@ for i in tqdm(range(num_of_samples)):
             n3 = prediction[m1] - prediction[m3] - (m3 <= m1) # this gap should become negative
             assert(n2 >= 0 and n3 >= 0)
 
-            m3_need = dp_array[n2][n3] # preprocessed array #TODO Kiarash!
+            m3_need = dp_array[n2][n3] # preprocessed dp array.
             case1 = min(case1, m3_need)
 
     else: # m2 is prediction

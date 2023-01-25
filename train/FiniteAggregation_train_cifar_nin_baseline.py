@@ -7,7 +7,7 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 import torch.backends.cudnn as cudnn
-sys.path.append('./FeatureLearningRotNet/architectures')
+sys.path.append('../FeatureLearningRotNet/architectures')
 
 from NetworkInNetwork import NetworkInNetwork
 import torchvision
@@ -16,6 +16,8 @@ import os
 import argparse
 import numpy
 import random
+
+import time
 
 parser = argparse.ArgumentParser(description='PyTorch CIFAR Training')
 parser.add_argument('--k', default = 50, type=int, help='the inverse of sensitivity')
@@ -63,7 +65,9 @@ class Flatten(nn.Module):
     def forward(self, x):
         return x.view(x.size(0), -1)
 
+avg_time = 0
 for part in range(args.start, args.start + args.range):
+
     seed = part
     if (args.zero_seed):
         seed = 0
@@ -99,6 +103,7 @@ for part in range(args.start, args.start + args.range):
 
     optimizer = optim.SGD(net.parameters(), lr=curr_lr, momentum=0.9, weight_decay=0.0005, nesterov= True)
 
+    st_time = time.time()
 # Training
     net.train()
     for epoch in range(200):
@@ -113,6 +118,10 @@ for part in range(args.start, args.start + args.range):
             curr_lr = curr_lr * 0.2
             for param_group in optimizer.param_groups:
                 param_group['lr'] = curr_lr
+    en_time = time.time()
+
+    print(f'time to train part {part}: {en_time - st_time}')
+    avg_time += en_time - st_time
 
     net.eval()
 
@@ -138,3 +147,5 @@ for part in range(args.start, args.start + args.range):
     }
     torch.save(state, checkpoint_subdir + '/FiniteAggregation_'+ str(part)+'.pth')
 
+print(f'avg time: {avg_time / args.range} to train a single model ...')
+print('done ...')

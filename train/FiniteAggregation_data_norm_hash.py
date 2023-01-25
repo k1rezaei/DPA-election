@@ -17,7 +17,6 @@ args = parser.parse_args()
 args.n_subsets = args.k * args.d
 
 
-
 channels =3
 if (args.dataset == "mnist"):
 	data = torchvision.datasets.MNIST(root=args.root, train=True, download=True)

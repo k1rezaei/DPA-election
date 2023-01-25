@@ -14,6 +14,11 @@ import argparse
 import numpy as np
 import random
 from tqdm import tqdm
+import gc
+import time
+
+gc.enable()
+st = time.time()
 
 INF = int(10 ** 9)
 frac1, frac2, frac3 = 0, 0, 0
@@ -51,6 +56,8 @@ filein = torch.load('/cmlscratch/wwx/DPA/evaluations/'+args.evaluations + '.pth'
 labels = filein['labels']
 scores = filein['scores']
 
+print('loading done ...')
+
 num_of_classes = args.num_classes
 num_of_samples = scores.shape[0]
 num_of_models = scores.shape[1]
@@ -70,7 +77,9 @@ shifted = [
 ]
 shifted = torch.LongTensor(shifted)
 
-for i in tqdm(range(num_of_samples)):
+print('all memory is allocated ...')
+
+for i in range(num_of_samples):
     # roe + fa
 
     # votes in 1st round
@@ -163,12 +172,18 @@ for i in tqdm(range(num_of_samples)):
         
         # NEW CASE
         for m3 in range(num_of_classes):
-            for m4 in range(num_of_classes):
+            if m1_to_m3[m3] > case1:
+                continue
+
+            for m4 in range(m3):
                 if m3 == m1 or m4 == m1:
                     continue
 
                 n1 = m1_to_m3[m3]
                 n2 = m1_to_m3[m4]
+
+                if n2 > case1:
+                    continue    
 
                 case1_gap = prediction[m1] - prediction[m3] - (m3 <= m1) + prediction[m1] - prediction[m4] - (m4 <= m1)
                 deltas_case1 = (1 + 2 * (max_classes_given_h == m1).long() - (max_classes_given_h == m3).long() - (max_classes_given_h == m4).long()).sum(dim=1)
@@ -232,8 +247,14 @@ for i in tqdm(range(num_of_samples)):
     
 
     certs[i] = min(min(case21, case22), case1)
+
+    if i % 1000 == 0:
+        print(f'{i} / {num_of_samples} ...')
     
-    
+
+en = time.time()
+print(en - st)
+print('done ...')
 
 
 base_acc = 100 *  (max_classes[:, :, 0] == labels.unsqueeze(1)).sum().item() / (num_of_samples * num_of_models)
@@ -245,5 +266,3 @@ print('Smoothed classifier accuracy: ' + str(accs[0] * 100.) + '%')
 print('Robustness certificate: ' + str(sum(accs >= .5)))
 print(accs)
 print('==================')
-
-
