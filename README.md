@@ -1,11 +1,8 @@
 # Run-off Election
 
-This repository includes PyTorch implementation of our paper.
+This repository includes PyTorch implementation of our submission.
 
 ##### Run-off Election: Improved Provable Defense against Data Poisoning Attacks 
-<font size=2>
-Keivan Rezaei*, Kiarash Banihashem*, Atoosa Chegini, Soheil Feizi
-</font>
 
 <br>
 <br>
