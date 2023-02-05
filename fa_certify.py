@@ -34,7 +34,7 @@ if not os.path.exists('./certs'):
 
 device = 'cpu'
 
-filein = torch.load('/cmlscratch/wwx/DPA/evaluations/'+args.evaluations + '.pth', map_location=torch.device(device))
+filein = torch.load('evaluations/'+args.evaluations + '.pth', map_location=torch.device(device))
 labels = filein['labels']
 scores = filein['scores']
 

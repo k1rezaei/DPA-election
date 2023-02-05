@@ -41,7 +41,7 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 # print(device)
 
 
-filein = torch.load('/cmlscratch/wwx/DPA/evaluations/'+args.evaluations + '.pth', map_location=torch.device(device))
+filein = torch.load('evaluations/'+args.evaluations + '.pth', map_location=torch.device(device))
 
 labels = filein['labels']
 scores = filein['scores']
