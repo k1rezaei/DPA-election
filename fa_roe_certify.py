@@ -160,7 +160,7 @@ for i in range(num_of_samples):
         if c1 == c_pred:
             continue
         
-        for c2 in range(num_of_classes):
+        for c2 in range(c1):
             if c2 == c_pred or c2 == c1:
                 continue
             
