@@ -30,8 +30,8 @@ These three lines of codes, find the certified radius based on methods:
 + FA+ROE
 + FA.
 ```
-python3 dpa_roe_cerfity.py --evaluations=cifar_nin_baseline_FiniteAggregation_k50_d1.pth --num_classes=10
-python3 fa_roe_cerfity.py --evaluations=cifar_nin_baseline_FiniteAggregation_k50_d16.pth --k=50 --d=16 --num_classes=10
-python3 fa_cerfity.py --evaluations=cifar_nin_baseline_FiniteAggregation_k50_d16.pth --k=50 --d=16 --num_classes=10
+python3 dpa_roe_cerfity.py --evaluations=cifar_nin_baseline_FiniteAggregation_k50_d1 --num_classes=10
+python3 fa_roe_cerfity.py --evaluations=cifar_nin_baseline_FiniteAggregation_k50_d16 --k=50 --d=16 --num_classes=10
+python3 fa_cerfity.py --evaluations=cifar_nin_baseline_FiniteAggregation_k50_d16 --k=50 --d=16 --num_classes=10
 ```
 Here `--num_classes` is the size of the label set on the evalauted dataset (i.e. `--num_classes=10` for MNIST and CIFAR-10 and `--num_classes=43` for GTSRB).
