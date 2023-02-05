@@ -25,7 +25,7 @@ parser.add_argument('--models',  type=str, help='name of models directory')
 parser.add_argument('--zero_seed', action='store_true', help='Use a random seed of zero (instead of the partition index)')
 
 args = parser.parse_args()
-checkpoint_dir = 'checkpoints'
+checkpoint_dir = 'train/checkpoints'
 
 if not os.path.exists('./evaluations'):
     os.makedirs('./evaluations')
@@ -35,7 +35,7 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 print('==> Preparing data..')
 
 
-modelnames = list(map(lambda x: './checkpoints/'+args.models+'/'+x, list(filter( lambda x:x[0]!='.',os.listdir('./checkpoints/'+args.models)))))
+modelnames = list(map(lambda x: 'train/checkpoints/'+args.models+'/'+x, list(filter( lambda x:x[0]!='.',os.listdir('train/checkpoints/'+args.models)))))
 num_classes = 10
 predictions = torch.zeros(10000, len(modelnames),num_classes).cuda()
 labels = torch.zeros(10000).type(torch.int).cuda()

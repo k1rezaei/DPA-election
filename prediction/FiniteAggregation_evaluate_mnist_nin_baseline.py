@@ -26,8 +26,7 @@ parser.add_argument('--models',  type=str, help='name of models directory')
 parser.add_argument('--zero_seed', action='store_true', help='Use a random seed of zero (instead of the partition index)')
 
 args = parser.parse_args()
-root = '/cmlscratch/wwx/DPA'
-checkpoint_dir = 'checkpoints'
+checkpoint_dir = 'train/checkpoints'
 if not os.path.exists('./evaluations'):
     os.makedirs('./evaluations')
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -36,7 +35,7 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 print('==> Preparing data..')
 
 
-modelnames = list(map(lambda x: root + '/checkpoints/'+args.models+'/'+x, list(filter( lambda x:x[0]!='.',os.listdir(root+'/checkpoints/'+args.models)))))
+modelnames = list(map(lambda x:  'train/checkpoints/'+args.models+'/'+x, list(filter( lambda x:x[0]!='.',os.listdir('train/checkpoints/'+args.models)))))
 num_classes = 10
 #predictions = torch.zeros(10000, len(modelnames),num_classes).cuda()
 predictions = torch.zeros(10000, len(modelnames),num_classes)
@@ -68,13 +67,14 @@ for i in range(len(modelnames)):
     net.eval()
     batch_offset = 0
     with torch.no_grad():
-         for batch_idx, (inputs, targets) in enumerate(testloader):
+        for batch_idx, (inputs, targets) in enumerate(testloader):
             inputs, targets = inputs.cuda(), targets.cuda()
             out = net(inputs)
             predictions[batch_offset:inputs.size(0)+batch_offset,i,:] = out
             if firstit:
-           	    labels[batch_offset:batch_offset+inputs.size(0)] = targets
+                labels[batch_offset:batch_offset+inputs.size(0)] = targets
             batch_offset += inputs.size(0)
+            
     firstit = False
 torch.save({'labels': labels, 'scores': predictions},'./evaluations/'+args.models+'.pth')
 
