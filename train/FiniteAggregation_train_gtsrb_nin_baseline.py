@@ -27,6 +27,8 @@ parser.add_argument('--start', required=True, type=int, help='starting subset nu
 parser.add_argument('--range', default=250, type=int, help='number of subsets to train')
 parser.add_argument('--zero_seed', action='store_true', help='Use a random seed of zero (instead of the partition index)')
 
+parser.add_argument('--version', required=True, type=int, help='version of base classifiers')
+
 args = parser.parse_args()
 
 args.n_subsets = args.k * args.d
@@ -66,9 +68,10 @@ class Flatten(nn.Module):
         return x.view(x.size(0), -1)
 
 for part in range(args.start, args.start + args.range):
-    seed = part
+    seed = (part + 1) * args.version * args.version
     if (args.zero_seed):
         seed = 0
+        
     random.seed(seed)
     numpy.random.seed(seed)
     torch.manual_seed(seed)
@@ -141,7 +144,7 @@ for part in range(args.start, args.start + args.range):
         'norm_mean' : means[part],
         'norm_std' : stds[part]
     }
-    torch.save(state, checkpoint_subdir + '/FiniteAggregation_'+ str(part)+'.pth')
+    torch.save(state, checkpoint_subdir + '/FiniteAggregation_'+ str(part)+'_v' + str(args.version) + '.pth')
 
 
 
