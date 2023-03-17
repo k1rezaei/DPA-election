@@ -12,17 +12,19 @@ Here `--dataset` can be `mnist`, `cifar` and `gtsrb`, which are benchmarks evalu
 ### Training the base learners
 ```
 cd train
-python3 FiniteAggregation_train_cifar_nin_baseline.py --k=50 --d=16 --start=0 --range=800
+python3 FiniteAggregation_train_cifar_nin_baseline.py --k=50 --d=16 --start=0 --range=800 --version 1
 ```
-Here `--k` and `--d` are the same as above, and a total of $k\cdot d$ base learners will be trained independently. `--start` and `--range` specify which base learners are trained with this script: For instance, when one uses `--k=50` and `--d=16`, one can use `--start=0` and `--range=800` to train all base learners sequentially, or one can use two separate runs with repsectively `--start=0` and `--start=400` (both with `--range=400`) to train in parallel the first 400 and the last 400 base learners.
+Here `--k` and `--d` are the same as above, and a total of $k\cdot d$ base learners will be trained independently. `--start` and `--range` specify which base learners are trained with this script. Also, `--version` shows the version of base classifiers trained, version plays role in the initial seed of classifiers.
+For instance, when one uses `--k=50` and `--d=16`, one can use `--start=0` and `--range=800` to train all base learners sequentially, or one can use two separate runs with repsectively `--start=0` and `--start=400` (both with `--range=400`) to train in parallel the first 400 and the last 400 base learners.
 To train on MNIST and GTSRB, run `FiniteAggregation_train_mnist_nin_baseline.py` and `FiniteAggregation_train_gtsrb_nin_baseline.py` respectively.
 
 
 ### Collecting predictions of base learners on test sets
 ```
-python3 prediction/FiniteAggregation_evaluate_cifar_nin_baseline.py --models=cifar_nin_baseline_FiniteAggregation_k50_d16
+python3 prediction/FiniteAggregation_evaluate_cifar_nin_baseline.py --models=cifar_nin_baseline_FiniteAggregation_k50_d16 --version 1
 ```
 For MNIST and GTSRB, run `FiniteAggregation_evaluate_mnist_nin_baseline.py` and `FiniteAggregation_evaluate_gtsrb_nin_baseline.py` instead.
+We note that `--version` refers to the version of classifiers that you're looking for their predictions.
 
 ### Computing the certified radius using the collected predictions
 These three lines of codes, find the certified radius based on methods:
@@ -30,8 +32,9 @@ These three lines of codes, find the certified radius based on methods:
 + FA+ROE
 + FA.
 ```
-python3 dpa_roe_cerfity.py --evaluations=cifar_nin_baseline_FiniteAggregation_k50_d1 --num_classes=10
-python3 fa_roe_cerfity.py --evaluations=cifar_nin_baseline_FiniteAggregation_k50_d16 --k=50 --d=16 --num_classes=10
-python3 fa_cerfity.py --evaluations=cifar_nin_baseline_FiniteAggregation_k50_d16 --k=50 --d=16 --num_classes=10
+python3 dpa_roe_cerfity.py --evaluations=cifar_nin_baseline_FiniteAggregation_k50_d1 --num_classes=10 --version 1
+python3 fa_roe_cerfity.py --evaluations=cifar_nin_baseline_FiniteAggregation_k50_d16 --k=50 --d=16 --num_classes=10 --version 1
+python3 fa_cerfity.py --evaluations=cifar_nin_baseline_FiniteAggregation_k50_d16 --k=50 --d=16 --num_classes=10 --version 1
 ```
-Here `--num_classes` is the size of the label set on the evalauted dataset (i.e. `--num_classes=10` for MNIST and CIFAR-10 and `--num_classes=43` for GTSRB).
+Here `--num_classes` is the size of the label set on the evalauted dataset (i.e. `--num_classes=10` for MNIST and CIFAR-10 and `--num_classes=43` for GTSRB) and 
+`--version` shows the version of classifiers you're looking for their certificates.
