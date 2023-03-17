@@ -48,12 +48,7 @@ firstit = True
 for i in range(len(modelnames)):
     modelname = 'train/checkpoints/'+args.models+f'/FiniteAggregation_{i}_v{args.version}.pth'
     part = i
-    seed = (part + 1) * args.version * args.version
-
-    if (args.zero_seed):
-        seed = 0
-        
-    print(i, seed)
+    seed = 0
     
     random.seed(seed)
     numpy.random.seed(seed)
