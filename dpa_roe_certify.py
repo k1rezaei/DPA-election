@@ -32,6 +32,7 @@ INF = 10 ** 9
 parser = argparse.ArgumentParser(description='Certification')
 parser.add_argument('--evaluations',  type=str, help='name of evaluations directory')
 parser.add_argument('--num_classes', type=int, default=10, help='Number of classes')
+parser.add_argument('--version', required=True, type=int, help='version of base classifiers')
 
 args = parser.parse_args()
 if not os.path.exists('./certs'):
@@ -41,7 +42,7 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 # print(device)
 
 
-filein = torch.load('evaluations/'+args.evaluations + '.pth', map_location=torch.device(device))
+filein = torch.load('evaluations/'+args.evaluations + '_v' + str(args.version) + '.pth', map_location=torch.device(device))
 
 labels = filein['labels']
 scores = filein['scores']
@@ -158,7 +159,7 @@ print("==> original DPA ..")
 certs = cert_dpa
 torchidx = idx_dpa
 certs[torchidx != labels] = -1
-torch.save(certs,'./certs/dpa_v2_'+args.evaluations+'.pth')
+torch.save(certs,'./certs/v_dpa_'+args.evaluations+ '_v' + str(args.version) + '.pth')
 a = certs.cpu().sort()[0].numpy()
 
 dpa_accs = np.array([(i <= a).sum() for i in np.arange(np.amax(a)+1)])/num_of_samples
@@ -172,7 +173,8 @@ print("==> DPA+ROE ..")
 certs = cert_dpa_roe
 torchidx = idx_dpa_roe
 certs[torchidx != labels] = -1
-torch.save(certs,'./certs/dpa_roe_'+args.evaluations+'.pth')
+torch.save(certs,'./certs/v_dpa_roe_'+args.evaluations+ '_v' + str(args.version) + '.pth')
+
 a = certs.cpu().sort()[0].numpy()
 
 roe_dpa_accs = np.array([(i <= a).sum() for i in np.arange(np.amax(a)+1)])/num_of_samples

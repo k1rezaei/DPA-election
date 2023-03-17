@@ -38,6 +38,7 @@ parser.add_argument('--evaluations',  type=str, help='name of evaluations file')
 parser.add_argument('--num_classes', type=int, default=10, help='number of classes')
 parser.add_argument('--k', default = 50, type=int, help='number of partitions')
 parser.add_argument('--d', default = 1, type=int, help='number of partitions that each model is trained on')
+parser.add_argument('--version', required=True, type=int, help='version of base classifiers')
 
 
 args = parser.parse_args()
@@ -53,7 +54,7 @@ if not os.path.exists('./certs'):
 
 device = 'cpu'
 
-filein = torch.load('evaluations/'+args.evaluations + '.pth', map_location=torch.device(device))
+filein = torch.load('evaluations/'+args.evaluations + '_v' + str(args.version) + '.pth', map_location=torch.device(device))
 labels = filein['labels']
 scores = filein['scores']
 
@@ -203,7 +204,7 @@ print('done ...')
 
 base_acc = 100 *  (max_classes[:, :, 0] == labels.unsqueeze(1)).sum().item() / (num_of_samples * num_of_models)
 print('Base classifier accuracy: ' + str(base_acc))
-torch.save(certs,'./certs/fa_roe_'+args.evaluations+'.pth')
+torch.save(certs,'./certs/v_fa_roe_'+args.evaluations+ '_v' + str(args.version) + '.pth')
 a = certs.cpu().sort()[0].numpy()
 accs = np.array([(i <= a).sum() for i in np.arange(np.amax(a)+1)])/predictions.shape[0]
 print('Smoothed classifier accuracy: ' + str(accs[0] * 100.) + '%')
