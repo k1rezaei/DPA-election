@@ -17,12 +17,14 @@ import argparse
 import numpy
 import random
 import re
+from tqdm import tqdm
 
 torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
 parser = argparse.ArgumentParser(description='PyTorch CIFAR Certification')
 parser.add_argument('--models',  type=str, help='name of models directory')
 parser.add_argument('--zero_seed', action='store_true', help='Use a random seed of zero (instead of the partition index)')
+parser.add_argument('--version', required=True, type=int, help='version of base classifiers')
 
 args = parser.parse_args()
 checkpoint_dir = 'train/checkpoints'
@@ -34,18 +36,25 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 # Data
 print('==> Preparing data..')
 
+print(args.version)
 
-modelnames = list(map(lambda x: 'train/checkpoints/'+args.models+'/'+x, list(filter( lambda x:x[0]!='.',os.listdir('train/checkpoints/'+args.models)))))
+modelnames = list(map(lambda x: 'train/checkpoints/'+args.models+'/'+x, list(filter( lambda x:f'v{args.version}.' in x,os.listdir('train/checkpoints/'+args.models)))))
+
 num_classes = 10
 predictions = torch.zeros(10000, len(modelnames),num_classes).cuda()
 labels = torch.zeros(10000).type(torch.int).cuda()
 firstit = True
 
 for i in range(len(modelnames)):
-    modelname = modelnames[i]
-    seed = int(re.findall(r"FiniteAggregation_[0-9]*\.pth",  modelname)[-1][18:-4])
+    modelname = 'train/checkpoints/'+args.models+f'/FiniteAggregation_{i}_v{args.version}.pth'
+    part = i
+    seed = (part + 1) * args.version * args.version
+
     if (args.zero_seed):
         seed = 0
+        
+    print(i, seed)
+    
     random.seed(seed)
     numpy.random.seed(seed)
     torch.manual_seed(seed)
@@ -76,5 +85,5 @@ for i in range(len(modelnames)):
             batch_offset += inputs.size(0)
     firstit = False
 
-torch.save({'labels': labels, 'scores': predictions},'./evaluations/'+args.models+'.pth')
+torch.save({'labels': labels, 'scores': predictions},'./evaluations/'+args.models+'_v' + str(args.version)+ '.pth')
 

@@ -27,12 +27,15 @@ parser.add_argument('--start', required=True, type=int, help='starting subset nu
 parser.add_argument('--range', default=250, type=int, help='number of subsets to train')
 parser.add_argument('--zero_seed', action='store_true', help='Use a random seed of zero (instead of the partition index)')
 
+parser.add_argument('--version', required=True, type=int, help='version of base classifiers')
+
 args = parser.parse_args()
 
 args.n_subsets = args.k * args.d
 args.dataset='cifar'
 
-
+print(f'zero_seed: {args.zero_seed} should be zero.')
+print(f'base classifiers versions!: {args.version}.')
 
 torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
@@ -46,7 +49,7 @@ if not os.path.exists('./checkpoints'):
     os.makedirs('./checkpoints')
 checkpoint_subdir = f'./{checkpoint_dir}/' + dirbase + f'_FiniteAggregation_k{args.k}_d{args.d}'
 if not os.path.exists(checkpoint_subdir):
-    os.makedirs(checkpoint_subdir)
+    os.makedirs(checkpoint_subdir, exist_ok=True)
 print("==> Checkpoint directory", checkpoint_subdir)
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -68,9 +71,12 @@ class Flatten(nn.Module):
 avg_time = 0
 for part in range(args.start, args.start + args.range):
 
-    seed = part
+    seed = (part + 1) * args.version * args.version
     if (args.zero_seed):
         seed = 0
+        
+    print(f'(part, seed): {part, seed}')
+    
     random.seed(seed)
     numpy.random.seed(seed)
     torch.manual_seed(seed)
@@ -94,7 +100,6 @@ for part in range(args.start, args.start + args.range):
     testset = torchvision.datasets.CIFAR10(root='./data', train=False, download=True, transform=transform_test)
 
     nomtestloader = torch.utils.data.DataLoader(testset, batch_size=128, shuffle=True, num_workers=1)
-    print('here')
     trainloader = torch.utils.data.DataLoader(torch.utils.data.Subset(trainset,part_indices), batch_size=128, shuffle=True, num_workers=1)
     net  = NetworkInNetwork({'num_classes':10})
     net = net.to(device)
@@ -145,7 +150,7 @@ for part in range(args.start, args.start + args.range):
         'norm_mean' : means[part],
         'norm_std' : stds[part]
     }
-    torch.save(state, checkpoint_subdir + '/FiniteAggregation_'+ str(part)+'.pth')
+    torch.save(state, checkpoint_subdir + '/FiniteAggregation_'+ str(part)+'_v' + str(args.version) + '.pth')
 
 print(f'avg time: {avg_time / args.range} to train a single model ...')
 print('done ...')
