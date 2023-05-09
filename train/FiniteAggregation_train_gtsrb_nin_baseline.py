@@ -8,8 +8,8 @@ import torch.optim as optim
 import torch.nn.functional as F
 import torch.backends.cudnn as cudnn
 import PIL
-from evaluation.gtsrb_dataset import GTSRB
-sys.path.append('./FeatureLearningRotNet/architectures')
+from gtsrb_dataset import GTSRB
+sys.path.append('../FeatureLearningRotNet/architectures')
 
 from NetworkInNetwork import NetworkInNetwork
 import torchvision
@@ -33,7 +33,6 @@ args = parser.parse_args()
 
 args.n_subsets = args.k * args.d
 args.dataset='gtsrb'
-
 
 
 torch.backends.cudnn.deterministic = True
@@ -145,7 +144,4 @@ for part in range(args.start, args.start + args.range):
         'norm_std' : stds[part]
     }
     torch.save(state, checkpoint_subdir + '/FiniteAggregation_'+ str(part)+'_v' + str(args.version) + '.pth')
-
-
-
 

@@ -8,7 +8,8 @@ import torch.optim as optim
 import torch.nn.functional as F
 import torch.backends.cudnn as cudnn
 import PIL
-from evaluation.gtsrb_dataset import GTSRB
+from gtsrb_dataset import GTSRB
+
 sys.path.append('./FeatureLearningRotNet/architectures')
 
 from NetworkInNetwork import NetworkInNetwork
@@ -64,7 +65,7 @@ for i in range(len(modelnames)):
         transforms.Normalize(checkpoint['norm_mean'], checkpoint['norm_std'])
     ])
 
-    testset = GTSRB('./data', train=False, transform=transform_test)
+    testset = GTSRB('train/data', train=False, transform=transform_test)
     testloader = torch.utils.data.DataLoader(testset, batch_size=400, shuffle=False, num_workers=1)
 
     net.load_state_dict(checkpoint['net'])

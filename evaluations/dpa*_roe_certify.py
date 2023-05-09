@@ -153,7 +153,10 @@ for i in tqdm(range(num_of_samples)):
     
     cert_dpa_roe[i] = min(CertR1, CertR2) - 1
 
-B = np.array([5, 10, 15, 18, 20])
+# B = np.array([10, 20, 40, 50, 60]) # cifar k=250
+B = np.array([5, 10, 15, 18, 20]) # cifar k=50
+# B = np.array([5, 15, 20, 25, 30]) # gtsrb k=100
+# B = np.array([5, 10, 15, 20, 22]) # gtsrb k=50
 
 print("==> original DPA ..")
 certs = cert_dpa
@@ -187,3 +190,6 @@ print(np.round_(100.* roe_dpa_accs[B], 2))
 print('==================')
 
 print(np.round_(100.* (roe_dpa_accs[B] - dpa_accs[B]), 2))
+
+print('B ---:')
+print(B)

@@ -20,41 +20,47 @@ INF = 10 ** 9
 parser = argparse.ArgumentParser(description='Certification')
 parser.add_argument('--evaluations',  type=str, help='name of evaluations directory')
 parser.add_argument('--vs', required=True, type=int, help='version of base classifiers')
-parser.add_argument('--vr', required=True, type=int, help='version of base classifiers')
+parser.add_argument('--vr', required=True, type=int, help='num of versions of base classifiers')
 
 args = parser.parse_args()
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-k = 50
-num_classes = 10
+k = 100
+num_classes = 43
 
-sum_of_logits = torch.zeros(10000, 50 ,num_classes).cuda()
+sum_of_logits = None
 first_it = True
 
 prv_labels = None
 
-for version in range(args.vs, args.vs + args.vr):
+# versions = [i for i in range(1, 11)]
+# versions.extend([12, 13, 16, 17, 21, 22])
+# print(versions)
+
+for version in tqdm(range(args.vs, args.vs + args.vr)):
+# for version in tqdm(versions):
     filein = torch.load(args.evaluations + '_v' + str(version) + '.pth', map_location=torch.device(device))
 
     labels = filein['labels']
     scores = filein['scores']
     
+    if sum_of_logits is None:
+        sum_of_logits = torch.zeros(scores.shape[0], scores.shape[1], scores.shape[2]).cuda()
+        
     sum_of_logits += scores
     
     
-    if not first_it:
-        print(prv_labels == labels)
-        
     prv_labels = labels
     first_it = False
     
     
-sum_of_logits /= args.vr
+# sum_of_logits /= args.vr
+# sum_of_logits /= len(versions)
 
 print(sum_of_logits.shape)
 
 torch.save({
     "scores": sum_of_logits,
     "labels": labels},
-    'dpa_star_cifar_nin_baseline_FiniteAggregation_k50_d1.pth')
+    f'dpa_star_{args.evaluations[:-3]}_d{args.vr}.pth')

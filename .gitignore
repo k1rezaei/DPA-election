@@ -3,6 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+*.ppm
+*.sh
+*.pth
+
 *.pth
 *.json
 

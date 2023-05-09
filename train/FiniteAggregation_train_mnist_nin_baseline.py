@@ -7,7 +7,7 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 import torch.backends.cudnn as cudnn
-sys.path.append('./FeatureLearningRotNet/architectures')
+sys.path.append('../FeatureLearningRotNet/architectures')
 
 from NetworkInNetwork import NetworkInNetwork
 import torchvision
