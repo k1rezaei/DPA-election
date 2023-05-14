@@ -8,7 +8,7 @@ Guidelines can be found in [guideline.md](https://github.com/k1rezaei/Run-Off-El
 
 ## Paper
 **Run-Off Election: Improved Provable Defense against Data Poisoning Attacks**  
-##### Keivan Rezaei, Kiarash Banihashem and Soheil Feizi  
+##### Keivan Rezaei, Kiarash Banihashem, Atoosa Chegini, and Soheil Feizi  
 International Conference on Machine Learning (**_ICML_**), 2023.  
 open access: [arXiv](https://arxiv.org/abs/2302.02300);
 
